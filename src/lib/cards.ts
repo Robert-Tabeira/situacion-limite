@@ -5,7 +5,7 @@ export type Card = {
 
 const FALLBACK_CARDS: Card[] = [
   {
-    situacion: 'En la cena de cumpleanos de tu pareja, su madre te pregunta delante de toda la mesa cuando van a convivir. Tu pareja se queda en silencio y todos esperan tu respuesta.',
+    situacion: 'En la cena de cumpleaños de tu pareja, su madre te pregunta delante de toda la mesa cuándo van a convivir. Tu pareja se queda en silencio y todos esperan tu respuesta.',
     opciones: [
       'Dices que todavia no lo hablaron en serio.',
       'Sonries y respondes que seria lindo, algun dia.',
@@ -149,10 +149,10 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Tu cita va al bano y ves entrar un mensaje a su celular que dice: “Decile la verdad hoy”. El telefono queda justo frente a ti.',
+    situacion: 'Tu cita va al baño y ves entrar un mensaje a su celular que dice: "Decile la verdad hoy". El teléfono queda justo frente a ti.',
     opciones: [
       'Miras hacia otro lado y no tocas nada.',
-      'Lees un poco mas porque no resistes la tentacion.',
+      'Lees un poco más porque no resistes la tentación.',
       'Preguntas de frente apenas vuelve a la mesa.',
       'Inventas una salida porque te cambió el clima.',
     ],
@@ -221,7 +221,7 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Te regalan algo objetivamente horrible, pero sabes que lo hicieron a mano y con muchisimo carino. Te preguntan si te gusto.',
+    situacion: 'Te regalan algo objetivamente horrible, pero sabes que lo hicieron a mano y con muchísimo cariño. Te preguntan si te gustó.',
     opciones: [
       'Mientes con dulzura porque valoras el gesto.',
       'Elogias la dedicacion, no el resultado.',
@@ -311,7 +311,7 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Tu companero de piso lleva visita sorpresa y la casa esta en un nivel de desorden historico que te averguenza mucho.',
+    situacion: 'Tu compañero de piso lleva visita sorpresa y la casa está en un nivel de desorden histórico que te avergüenza mucho.',
     opciones: [
       'Limpias a velocidad absurda antes de abrir.',
       'Los haces pasar igual y bancas la realidad.',
@@ -383,7 +383,7 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Olvidaste el cumpleanos de alguien que siempre recuerda el tuyo y te escribe con toda la buena onda del mundo.',
+    situacion: 'Olvidaste el cumpleaños de alguien que siempre recuerda el tuyo y te escribe con toda la buena onda del mundo.',
     opciones: [
       'Llamas al instante y pides perdon de verdad.',
       'Armas una sorpresa improvisada para compensar.',
@@ -392,7 +392,7 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Tu acompanante va al bano justo cuando llega la cuenta. Los dos venian actuando como si no supieran quien iba a pagar.',
+    situacion: 'Tu acompañante va al baño justo cuando llega la cuenta. Los dos venían actuando como si no supieran quién iba a pagar.',
     opciones: [
       'Pagas sin dudar y no haces escena.',
       'Esperas su regreso porque no te toca asumirlo solo.',
@@ -401,7 +401,7 @@ const FALLBACK_CARDS: Card[] = [
     ],
   },
   {
-    situacion: 'Un musico de restaurante se acerca a tu mesa en plena cita y empieza a cantarte demasiado cerca. Tu cita parece fascinada.',
+    situacion: 'Un músico de restaurante se acerca a tu mesa en plena cita y empieza a cantarte demasiado cerca. Tu cita parece fascinada.',
     opciones: [
       'Te sumas al momento y lo abrazas con humor.',
       'Te hundes un poco en la silla y sobrevives.',
