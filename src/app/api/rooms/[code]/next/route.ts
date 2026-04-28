@@ -18,7 +18,12 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
 
   // Generate card
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `https://${req.headers.get('host')}`
-  const cardRes = await fetch(`${baseUrl}/api/card`, { method: 'POST' })
+  const usedCards: string[] = Array.isArray(room.used_cards) ? room.used_cards : []
+  const cardRes = await fetch(`${baseUrl}/api/card`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ excludeSituations: usedCards }),
+  })
   if (!cardRes.ok) return NextResponse.json({ error: 'Error generando carta' }, { status: 500 })
   const card = await cardRes.json()
 
@@ -29,6 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
     center_session: centerOrder[nextIdx],
     situacion: card.situacion,
     opciones: card.opciones,
+    used_cards: [...usedCards, card.situacion],
     center_answer: null,
     updated_at: new Date().toISOString(),
   }).eq('code', code)

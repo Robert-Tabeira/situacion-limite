@@ -25,9 +25,14 @@ REGLAS:
 - Idioma: Español rioplatense (Argentina/Uruguay)
 - SOLO JSON, nada más`
 
-export async function POST() {
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => ({}))
+  const excludeSituations = Array.isArray(body?.excludeSituations)
+    ? body.excludeSituations.filter((value: unknown): value is string => typeof value === 'string')
+    : []
+
   if (!client) {
-    return NextResponse.json(getFallbackCard())
+    return NextResponse.json(getFallbackCard(excludeSituations))
   }
 
   try {
@@ -35,7 +40,10 @@ export async function POST() {
       model: 'claude-sonnet-4-20250514',
       max_tokens: 400,
       system: SYSTEM,
-      messages: [{ role: 'user', content: 'Genera una carta nueva. Tema variado y original.' }],
+      messages: [{
+        role: 'user',
+        content: `Genera una carta nueva. Tema variado y original. Evita repetir o parecerte demasiado a estas situaciones ya usadas: ${excludeSituations.join(' | ') || 'ninguna'}.`,
+      }],
     })
 
     const raw = msg.content.map(b => (b.type === 'text' ? b.text : '')).join('')
@@ -48,6 +56,6 @@ export async function POST() {
     return NextResponse.json(card)
   } catch (e) {
     console.warn('AI card generation failed, using fallback card instead.')
-    return NextResponse.json(getFallbackCard())
+    return NextResponse.json(getFallbackCard(excludeSituations))
   }
 }

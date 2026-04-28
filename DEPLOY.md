@@ -4,6 +4,7 @@
 
 1. Crear proyecto en https://supabase.com
 2. Ir a **SQL Editor** → pegar el contenido de `supabase/schema.sql` → ejecutar
+   Si el proyecto ya existe y ya habías corrido ese schema antes, vuelve a ejecutarlo para agregar la columna `used_cards`.
 3. Ir a **Settings → API** → copiar:
    - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`

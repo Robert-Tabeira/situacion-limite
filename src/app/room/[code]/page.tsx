@@ -289,20 +289,25 @@ function LobbyView({ room, isHost, session, onStart, loading }: {
 
       {/* Players */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5">
-        <p className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">
-          Jugadores ({room.players.length})
-        </p>
-        <div className="space-y-2">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <p className="text-xs font-mono tracking-widest text-gray-400 uppercase">
+            Jugadores ({room.players.length})
+          </p>
+          <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase">
+            minimo 2, sin maximo
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {room.players.map(p => (
-            <div key={p.session_id} className="flex items-center gap-2.5">
-              <ColorDot idx={p.color_idx} size="md" />
-              <span className="text-sm font-medium text-gray-800">{p.name}</span>
-              {p.session_id === room.host_session && (
-                <span className="text-[10px] font-mono text-gray-400 ml-auto">host</span>
-              )}
-              {p.session_id === session && (
-                <span className="text-[10px] font-mono text-gray-400 ml-auto">vos</span>
-              )}
+            <div key={p.session_id} className="rounded-xl border border-gray-100 bg-gray-50/70 px-3 py-2">
+              <div className="flex items-center gap-2.5">
+                <ColorDot idx={p.color_idx} size="md" />
+                <span className="text-sm font-medium text-gray-800 truncate">{p.name}</span>
+              </div>
+              <div className="mt-1.5 flex gap-2 text-[10px] font-mono tracking-widest text-gray-400 uppercase">
+                {p.session_id === room.host_session && <span>host</span>}
+                {p.session_id === session && <span>vos</span>}
+              </div>
             </div>
           ))}
         </div>
@@ -331,16 +336,22 @@ function ScoreBoard({ room, session }: { room: RoomView; session: string }) {
   const sorted = [...room.players].sort((a, b) => b.score - a.score)
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-4">
-      <div className="flex gap-3 overflow-x-auto pb-1">
-        {sorted.map(p => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {sorted.map((p, index) => {
           const c = PLAYER_COLORS[p.color_idx % PLAYER_COLORS.length]
           const pct = Math.min(100, Math.round(p.score / room.steps_to_win * 100))
           return (
-            <div key={p.session_id} className="flex-shrink-0 text-center min-w-[60px]">
-              <div className="text-xs font-medium text-gray-700 mb-1 truncate max-w-[60px]">
-                {p.session_id === session ? 'Vos' : p.name}
+            <div key={p.session_id} className="rounded-xl border border-gray-100 bg-gray-50/80 px-3 py-2.5">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <ColorDot idx={p.color_idx} size="sm" />
+                  <span className="text-xs font-medium text-gray-700 truncate">
+                    {p.session_id === session ? 'Vos' : p.name}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-gray-400">#{index + 1}</span>
               </div>
-              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-1">
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-1.5">
                 <div className="h-full rounded-full transition-all duration-500"
                   style={{ width: `${pct}%`, background: c.hex }} />
               </div>

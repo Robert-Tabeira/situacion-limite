@@ -85,7 +85,7 @@ export default function Home() {
               <div>
                 <label className="block text-xs font-mono tracking-widest text-gray-400 uppercase mb-1.5">Código de sala</label>
                 <input value={code} onChange={e => setCode(e.target.value.toUpperCase())}
-                  placeholder="ABCDE" maxLength={6}
+                  placeholder="ABCDE" maxLength={5}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-gray-400 text-gray-900 font-mono text-2xl tracking-widest text-center uppercase"
                   onKeyDown={e => e.key === 'Enter' && join()} />
               </div>
