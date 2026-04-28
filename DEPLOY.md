@@ -29,6 +29,7 @@
 
 3. En **Environment Variables** agregar:
    ```
+   SUPABASE_URL                 = https://xxxx.supabase.co
    NEXT_PUBLIC_SUPABASE_URL     = https://xxxx.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJ...
    SUPABASE_SERVICE_KEY         = eyJ...
