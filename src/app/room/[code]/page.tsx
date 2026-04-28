@@ -290,7 +290,7 @@ function LobbyView({ room, isHost, session, onStart, loading }: {
       {/* Players */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5">
         <p className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">
-          Jugadores ({room.players.length}/6)
+          Jugadores ({room.players.length})
         </p>
         <div className="space-y-2">
           {room.players.map(p => (
@@ -416,13 +416,15 @@ function GuessingPhase({ room, isCenter, session, selected, confirmed, onSelect,
 
   if (!opciones) return null
 
+  const lockedCenterAnswer = selected ?? room.center_answer
+
   if (isCenter) return (
     <div className="space-y-3">
       <div className="bg-emerald-50 border border-emerald-100 rounded-2xl px-5 py-5 text-center">
         <p className="text-emerald-900 font-medium">Tu respuesta está bloqueada</p>
         <div className="mt-3 bg-emerald-100 rounded-xl px-4 py-3 inline-block">
-          <span className="text-lg font-display font-bold text-emerald-800">{LETTERS[room.center_answer ?? 0]}</span>
-          <span className="text-sm text-emerald-700 ml-2">{opciones[room.center_answer ?? 0]}</span>
+          <span className="text-lg font-display font-bold text-emerald-800">{lockedCenterAnswer !== null ? LETTERS[lockedCenterAnswer] : '?'}</span>
+          <span className="text-sm text-emerald-700 ml-2">{lockedCenterAnswer !== null ? opciones[lockedCenterAnswer] : 'Esperando tu eleccion...'}</span>
         </div>
         <p className="text-sm text-emerald-600 mt-3">
           {confirmedCount} de {guessersCount} jugadores confirmaron su respuesta

@@ -16,7 +16,6 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
   if (existing) return NextResponse.json({ code })
 
   const { count } = await db.from('sl_players').select('*', { count: 'exact', head: true }).eq('room_code', code)
-  if ((count || 0) >= 6) return NextResponse.json({ error: 'Sala llena (máx 6)' }, { status: 400 })
 
   const { error } = await db.from('sl_players').insert({
     room_code: code, session_id, name: name.trim(), color_idx: count || 0, score: 0,
