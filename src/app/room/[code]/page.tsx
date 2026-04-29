@@ -271,7 +271,7 @@ export default function RoomPage() {
 
         {/* ── FINISHED ── */}
         {room.status === 'finished' && (
-          <FinishedView
+          <FinishedSummaryView
             room={room}
             session={session.current}
             onHome={() => router.push('/')}
@@ -622,6 +622,140 @@ function RevealPhase({ room, session, onNext, loading }: {
       <button onClick={onNext} disabled={loading}
         className="w-full py-4 bg-gray-900 text-white rounded-2xl text-base font-medium hover:bg-gray-800 disabled:opacity-40 transition-colors active:scale-[.98]">
         {loading ? 'Cargando...' : 'Siguiente ronda →'}
+      </button>
+    </div>
+  )
+}
+
+function FinishedSummaryView({ room, session, onHome, onReplay, loading }: {
+  room: RoomView
+  session: string
+  onHome: () => void
+  onReplay: () => void
+  loading: boolean
+}) {
+  const sorted = [...room.players].sort((a, b) => b.score - a.score)
+  const winner = sorted[0]
+  const isHost = room.host_session === session
+  const podium = sorted.slice(0, 3)
+  const lastPlayer = sorted[sorted.length - 1]
+  const wildCard = sorted[Math.floor(sorted.length / 2)]
+  const awards = [
+    {
+      label: 'Mente maestra',
+      player: winner,
+      detail: `Cerró la partida con ${winner.score} puntos.`,
+    },
+    {
+      label: 'Casi leyenda',
+      player: sorted[1] ?? winner,
+      detail: sorted[1]
+        ? `Terminó muy cerca con ${sorted[1].score} puntos.`
+        : 'Fue la referencia del resto de la sala.',
+    },
+    {
+      label: 'Agente del caos',
+      player: wildCard,
+      detail: wildCard.session_id === winner.session_id
+        ? 'Ganó y aun así dejó una partida impredecible.'
+        : 'Se movió por la tabla y mantuvo el caos vivo.',
+    },
+    {
+      label: 'Resistencia total',
+      player: lastPlayer,
+      detail: lastPlayer.session_id === winner.session_id
+        ? 'Dominó la partida de principio a fin.'
+        : 'Siguió peleando hasta el cierre de la sala.',
+    },
+  ]
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-gray-900 rounded-3xl p-8 text-center relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/10 to-transparent" />
+        <p className="relative text-gray-400 text-xs font-mono tracking-widest uppercase mb-1">Ganador</p>
+        <div className="relative flex items-center justify-center gap-2 mb-1">
+          <ColorDot idx={winner.color_idx} size="lg" />
+          <span className="font-display text-3xl font-black text-white">{winner.name}</span>
+        </div>
+        <span className="relative text-gray-400 text-sm">{winner.score} puntos</span>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {podium.map((player, index) => {
+          const medal = index === 0 ? '1' : index === 1 ? '2' : '3'
+          const medalBg = index === 0 ? '#FEF3C7' : index === 1 ? '#F3F4F6' : '#FCE7F3'
+          const medalColor = index === 0 ? '#92400E' : index === 1 ? '#374151' : '#9D174D'
+          return (
+            <div key={player.session_id} className="rounded-2xl border border-gray-100 bg-white p-4 text-center">
+              <div
+                className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full text-sm font-mono font-bold"
+                style={{ background: medalBg, color: medalColor }}
+              >
+                {medal}
+              </div>
+              <div className="mb-2 flex items-center justify-center gap-2">
+                <ColorDot idx={player.color_idx} size="sm" />
+                <span className="text-sm font-semibold text-gray-800">
+                  {player.name} {player.session_id === session && <span className="text-gray-400 font-normal">(vos)</span>}
+                </span>
+              </div>
+              <p className="text-[10px] font-mono tracking-widest text-gray-400 uppercase">Puntaje final</p>
+              <p className="mt-1 text-lg font-bold text-gray-900">{player.score}</p>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-100 p-5">
+        <p className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">Tabla final</p>
+        {sorted.map((p, i) => {
+          const c = PLAYER_COLORS[p.color_idx % PLAYER_COLORS.length]
+          return (
+            <div key={p.session_id} className="flex items-center gap-3 py-2.5 border-b border-gray-50 last:border-0">
+              <span className="text-sm font-mono text-gray-400 w-4">{i + 1}</span>
+              <ColorDot idx={p.color_idx} />
+              <span className="flex-1 text-sm font-medium text-gray-800">
+                {p.name} {p.session_id === session && <span className="text-gray-400 font-normal">(vos)</span>}
+              </span>
+              <span className="font-mono text-sm font-bold" style={{ color: c.hex }}>{p.score}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-100 p-5">
+        <p className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">Premios de la sala</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {awards.map(award => (
+            <div key={`${award.label}-${award.player.session_id}`} className="rounded-xl border border-gray-100 bg-gray-50/80 p-3">
+              <p className="text-[10px] font-mono tracking-widest text-gray-400 uppercase mb-1">{award.label}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <ColorDot idx={award.player.color_idx} size="sm" />
+                <span className="text-sm font-semibold text-gray-800">
+                  {award.player.name} {award.player.session_id === session && <span className="text-gray-400 font-normal">(vos)</span>}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">{award.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {isHost ? (
+        <button onClick={onReplay} disabled={loading}
+          className="w-full py-4 bg-gray-900 text-white rounded-2xl text-base font-medium hover:bg-gray-800 disabled:opacity-40 transition-colors active:scale-[.98]">
+          {loading ? 'Preparando revancha...' : 'Jugar otra partida'}
+        </button>
+      ) : (
+        <div className="text-center text-sm text-gray-400 py-2 animate-pulse">
+          Esperando que el host prepare otra partida...
+        </div>
+      )}
+
+      <button onClick={onHome}
+        className="w-full py-4 bg-white border border-gray-200 text-gray-700 rounded-2xl text-base font-medium hover:bg-gray-50 transition-colors active:scale-[.98]">
+        Volver al inicio
       </button>
     </div>
   )
