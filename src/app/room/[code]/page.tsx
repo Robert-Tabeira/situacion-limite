@@ -158,6 +158,26 @@ export default function RoomPage() {
     }
   }
 
+  async function doReplay() {
+    setActionLoading(true)
+    try {
+      const res = await fetch(`/api/rooms/${code}/replay`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: session.current }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setError(data?.error || 'No se pudo reiniciar la partida.')
+        return
+      }
+      setSelectedOption(null)
+      setMyVoteConfirmed(false)
+      await fetchRoom()
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   // ── render ──
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -251,7 +271,13 @@ export default function RoomPage() {
 
         {/* ── FINISHED ── */}
         {room.status === 'finished' && (
-          <FinishedView room={room} session={session.current} onHome={() => router.push('/')} />
+          <FinishedView
+            room={room}
+            session={session.current}
+            onHome={() => router.push('/')}
+            onReplay={doReplay}
+            loading={actionLoading}
+          />
         )}
       </div>
     </div>
@@ -601,9 +627,16 @@ function RevealPhase({ room, session, onNext, loading }: {
   )
 }
 
-function FinishedView({ room, session, onHome }: { room: RoomView; session: string; onHome: () => void }) {
+function FinishedView({ room, session, onHome, onReplay, loading }: {
+  room: RoomView
+  session: string
+  onHome: () => void
+  onReplay: () => void
+  loading: boolean
+}) {
   const sorted = [...room.players].sort((a, b) => b.score - a.score)
   const winner = sorted[0]
+  const isHost = room.host_session === session
 
   return (
     <div className="space-y-4">
@@ -634,8 +667,19 @@ function FinishedView({ room, session, onHome }: { room: RoomView; session: stri
         })}
       </div>
 
+      {isHost ? (
+        <button onClick={onReplay} disabled={loading}
+          className="w-full py-4 bg-gray-900 text-white rounded-2xl text-base font-medium hover:bg-gray-800 disabled:opacity-40 transition-colors active:scale-[.98]">
+          {loading ? 'Preparando revancha...' : 'Jugar otra partida'}
+        </button>
+      ) : (
+        <div className="text-center text-sm text-gray-400 py-2 animate-pulse">
+          Esperando que el host prepare otra partida...
+        </div>
+      )}
+
       <button onClick={onHome}
-        className="w-full py-4 bg-gray-900 text-white rounded-2xl text-base font-medium hover:bg-gray-800 transition-colors active:scale-[.98]">
+        className="w-full py-4 bg-white border border-gray-200 text-gray-700 rounded-2xl text-base font-medium hover:bg-gray-50 transition-colors active:scale-[.98]">
         Volver al inicio
       </button>
     </div>
