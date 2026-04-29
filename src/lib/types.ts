@@ -13,6 +13,16 @@ export interface Vote {
   chosen_option: number
 }
 
+export interface RoundHistoryEntry {
+  round_num: number
+  center_session: string | null
+  center_name: string
+  situacion: string
+  opciones: string[]
+  center_answer: number
+  winners: string[]
+}
+
 /** What the API returns — center_answer is null unless phase === 'revealing' */
 export interface RoomView {
   code:           string
@@ -27,6 +37,7 @@ export interface RoomView {
   center_answer:  number | null   // revealed only during 'revealing'
   players:        Player[]
   votes:          Vote[]           // confirmed votes from non-center players
+  round_history:  RoundHistoryEntry[]
   my_session:     string
 }
 

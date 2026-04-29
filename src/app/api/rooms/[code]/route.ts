@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
-import { RoomView } from '@/lib/types'
+import { RoomView, RoundHistoryEntry } from '@/lib/types'
 
 export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
   const session_id = req.nextUrl.searchParams.get('session') || ''
@@ -46,6 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: { code: string
     center_answer: revealAnswer ? room.center_answer : null,
     players: playerList,
     votes: (votes || []).filter((v: { session_id: string; chosen_option: number }) => v.session_id !== room.center_session),
+    round_history: Array.isArray(room.round_history) ? room.round_history as RoundHistoryEntry[] : [],
     my_session: session_id,
   }
 

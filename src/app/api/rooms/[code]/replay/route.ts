@@ -26,6 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
       round_num: 0,
       center_order: [],
       used_cards: [],
+      round_history: [],
       current_center_idx: 0,
       center_session: null,
       center_answer: null,

@@ -13,6 +13,7 @@ create table if not exists sl_rooms (
   -- Turn management (shuffled once at game start)
   center_order         jsonb not null default '[]',     -- ordered array of session_ids
   used_cards           jsonb not null default '[]',     -- ordered array of used situations
+  round_history        jsonb not null default '[]',     -- summary of finished rounds
   current_center_idx   integer not null default 0,
   round_num            integer not null default 0,
   -- Current round data
@@ -26,6 +27,7 @@ create table if not exists sl_rooms (
 );
 
 alter table if exists sl_rooms add column if not exists used_cards jsonb not null default '[]';
+alter table if exists sl_rooms add column if not exists round_history jsonb not null default '[]';
 
 -- Players: one row per player per room
 create table if not exists sl_players (

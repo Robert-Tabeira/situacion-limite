@@ -49,9 +49,22 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
     const { data: updated } = await db.from('sl_players').select('score').eq('room_code', code)
     const hasWinner = (updated || []).some((p: { score: number }) => p.score >= room.steps_to_win)
 
+    const centerPlayer = (currentPlayers || []).find((player: { session_id: string; name: string }) => player.session_id === room.center_session)
+    const roundHistory = Array.isArray(room.round_history) ? room.round_history : []
+    const historyEntry = {
+      round_num: room.round_num,
+      center_session: room.center_session,
+      center_name: centerPlayer?.name || 'Centro',
+      situacion: room.situacion || '',
+      opciones: Array.isArray(room.opciones) ? room.opciones : [],
+      center_answer: room.center_answer,
+      winners,
+    }
+
     await db.from('sl_rooms').update({
       phase: hasWinner ? 'finished' : 'revealing',
       status: hasWinner ? 'finished' : 'playing',
+      round_history: [...roundHistory, historyEntry],
       updated_at: new Date().toISOString(),
     }).eq('code', code)
   }

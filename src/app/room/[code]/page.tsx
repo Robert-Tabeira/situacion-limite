@@ -742,6 +742,45 @@ function FinishedSummaryView({ room, session, onHome, onReplay, loading }: {
         </div>
       </div>
 
+      {room.round_history.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <p className="text-xs font-mono tracking-widest text-gray-400 uppercase mb-3">Historial de rondas</p>
+          <div className="space-y-3">
+            {[...room.round_history].reverse().map(round => {
+              const centerAnswerLabel = round.opciones[round.center_answer] || ''
+              const winnerNames = round.winners
+                .map(sid => room.players.find(player => player.session_id === sid)?.name)
+                .filter(Boolean) as string[]
+
+              return (
+                <div key={`round-${round.round_num}`} className="rounded-xl border border-gray-100 bg-gray-50/80 p-4">
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase">
+                      Ronda {round.round_num}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Centro: <span className="font-medium text-gray-700">{round.center_name}</span>
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-800 leading-relaxed mb-3">{round.situacion}</p>
+                  <div className="rounded-lg bg-white border border-gray-100 px-3 py-2 mb-3">
+                    <p className="text-[10px] font-mono tracking-widest text-gray-400 uppercase mb-1">Respuesta real</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {LETTERS[round.center_answer]}. {centerAnswerLabel}
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {winnerNames.length > 0
+                      ? `${winnerNames.join(', ')} acertaron y sumaron 1 punto.`
+                      : 'Nadie acertó en esta ronda.'}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {isHost ? (
         <button onClick={onReplay} disabled={loading}
           className="w-full py-4 bg-gray-900 text-white rounded-2xl text-base font-medium hover:bg-gray-800 disabled:opacity-40 transition-colors active:scale-[.98]">
